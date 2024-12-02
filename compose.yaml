@@ -1,0 +1,37 @@
+services:
+  frontend:
+    build:
+      context: ./app
+      dockerfile: ./dockerfile.yaml
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+  backend:
+    build:
+      context: ./server
+      dockerfile: ./dockerfile.yaml
+    ports:
+      - "8747:8747"
+    depends_on:
+      - mongodb
+    environment:
+      - DATABASE_URL=mongodb://admin:password@mongodb:27017
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+  mongo-express:
+    image: mongo-express
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      
