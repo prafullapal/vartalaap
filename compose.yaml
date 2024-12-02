@@ -1,15 +1,17 @@
 services:
   frontend:
     build:
-      context: ./app
+      context: ./frontend
       dockerfile: ./dockerfile.yaml
     ports:
       - "5173:5173"
     depends_on:
       - backend
+    environment:
+      - VITE_SERVER_URL=http://localhost:8747
   backend:
     build:
-      context: ./server
+      context: ./backend
       dockerfile: ./dockerfile.yaml
     ports:
       - "8747:8747"
@@ -17,6 +19,8 @@ services:
       - mongodb
     environment:
       - DATABASE_URL=mongodb://admin:password@mongodb:27017
+    env_file:
+      - .env
   mongodb:
     image: mongo
     ports:
